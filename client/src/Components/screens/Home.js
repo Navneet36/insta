@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const Home = () => {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
+    const [like,setLike]=useState(false)
     const { state, dispatch } = useContext(UserContext)
 
     useEffect(() => {
@@ -21,28 +22,32 @@ const Home = () => {
         })
     }, [])
     const likePost = (id) => {
-        fetch('/like',{
-            method: "put",
-            headers: {
-                "Content-Type":"application/json",
-                "Authorization": "Bearer " + localStorage.getItem("jwt")
-            },
-            body: JSON.stringify({
-                postId:id
-            })
-        }).then(res => res.json())
-        .then(result => {
-            const newData = data.map(item => {
-                if (item._id == result._id) {
-                    return result
-                }
-                else 
-                    return item
-            })
-            setData(newData)
-        }).catch(err => {
-            console.log(err)
-        })
+        if (like == false) {
+            setLike(true)
+            fetch('/like', {
+                method: "put",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("jwt")
+                },
+                body: JSON.stringify({
+                    postId: id
+                })
+            }).then(res => res.json())
+                .then(result => {
+                    const newData = data.map(item => {
+                        if (item._id == result._id) {
+                            return result
+                        }
+                        else
+                            return item
+                    })
+                    setData(newData)
+                    setLike(false)
+                }).catch(err => {
+                    console.log(err)
+                })
+        }
     }
     const unlikePost = (id) => {
         fetch('/unlike', {
@@ -120,7 +125,7 @@ const Home = () => {
                 data.map(item => {
                     return(
                         <div className="card home-card" key={item._id}>
-                            <h5><Link to={ item.postedBy._id !== state._id ?'/profile/'+ item.postedBy._id :'/profile'}>{item.postedBy.name}</Link>
+                            <h5 className="brand-logo" style={{paddingLeft:"5px"}}><Link to={ item.postedBy._id !== state._id ?'/profile/'+ item.postedBy._id :'/profile'}>{item.postedBy.name}</Link>
                                 {item.postedBy._id == state._id
                                     &&
                                     <i className="material-icons"
