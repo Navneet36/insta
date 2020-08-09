@@ -5,6 +5,13 @@ a {
 .brand-logo {
     font-family: 'Grand Hotel', cursive;
 }
+.loader
+{
+position:fixed;
+  top:50%;
+  left:50%;
+  -webkit-transform:translate(-50%,-50%);
+}
 .mycard {
     margin-top: 30px;
 }
